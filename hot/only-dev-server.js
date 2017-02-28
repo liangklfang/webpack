@@ -8,14 +8,17 @@ if(module.hot) {
 	var upToDate = function upToDate() {
 		return lastHash.indexOf(__webpack_hash__) >= 0;
 	};
+	//检查更新
 	var check = function check() {
+		//check方法：Check all currently loaded modules for updates and apply updates if found.
 		module.hot.check().then(function(updatedModules) {
+			//没有更新的模块直接返回
 			if(!updatedModules) {
 				console.warn("[HMR] Cannot find update. Need to do a full reload!");
 				console.warn("[HMR] (Probably because of restarting the webpack-dev-server)");
 				return;
 			}
-
+            //apply方法:If status() != "ready" it throws an error.
 			return module.hot.apply({
 				ignoreUnaccepted: true,
 				ignoreDeclined: true,
@@ -33,7 +36,7 @@ if(module.hot) {
 				if(!upToDate()) {
 					check();
 				}
-
+                //更新的模块updatedModules和renewedModules模块
 				require("./log-apply-result")(updatedModules, renewedModules);
 
 				if(upToDate()) {
@@ -54,6 +57,7 @@ if(module.hot) {
 	hotEmitter.on("webpackHotUpdate", function(currentHash) {
 		lastHash = currentHash;
 		if(!upToDate()) {
+			//有更新
 			var status = module.hot.status();
 			if(status === "idle") {
 				console.log("[HMR] Checking for updates on the server...");
